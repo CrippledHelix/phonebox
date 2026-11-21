@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 // A stub of the app's native bridge: the page may only hand it a computer's id.
-async function open(page, { can = true } = {}) {
+async function open(page, { can = true, unreachableNight = false, unreachableNightDelayMin = 5 } = {}) {
   await page.clock.install({ time: new Date('2026-01-01T12:00:00Z') });
   // remembers which of the panel's 1 s wake timers are still running (the clock's own setInterval is already in place)
   await page.addInitScript(() => {
@@ -27,11 +27,13 @@ async function open(page, { can = true } = {}) {
   await page.goto('/panel/');
   await expect(page.locator('#dots i')).not.toHaveCount(0);
   await page.clock.pauseAt(new Date('2026-01-01T12:01:00Z'));
-  await page.evaluate(async () => {
+  await page.evaluate(async ({ unreachableNight, unreachableNightDelayMin }) => {
     window.fetch = () => Promise.reject(new TypeError('the agent is not running'));
     const m = await import('/panel/main.js');
+    m.cfg.display.nightWhenUnreachable = unreachableNight;
+    m.cfg.display.unreachableNightDelayMin = unreachableNightDelayMin;
     m.setOnline(false);
-  });
+  }, { unreachableNight, unreachableNightDelayMin });
 }
 
 const wakes = (page) => page.evaluate(() => window.__wakes);
@@ -112,4 +114,28 @@ test('when the agent answers again the button goes away and the next outage star
   await page.evaluate(async () => { (await import('/panel/main.js')).setOnline(false); });
   await expect(button(page)).toHaveText('Wake the PC');
   await expect(button(page)).toBeEnabled();
+});
+
+test('the unreachable setting waits the configured delay before showing the night screen', async ({ page }) => {
+  await open(page, { unreachableNight: true, unreachableNightDelayMin: 1 });
+  await page.clock.runFor(59_000);
+  await expect(page.locator('body')).not.toHaveClass(/(^|\s)night($|\s)/);
+  await page.clock.runFor(2_000);
+  await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
+});
+
+test('the night screen caused by an outage is cleared when the agent answers', async ({ page }) => {
+  await open(page, { unreachableNight: true, unreachableNightDelayMin: 1 });
+  await page.clock.runFor(61_000);
+  await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
+  await page.evaluate(async () => { (await import('/panel/main.js')).setOnline(true); });
+  await expect(page.locator('body')).not.toHaveClass(/(^|\s)night($|\s)/);
+  await expect(button(page)).toBeHidden();
+});
+
+test('the unreachable night screen keeps the Wake the PC control reachable', async ({ page }) => {
+  await open(page, { unreachableNight: true, unreachableNightDelayMin: 1 });
+  await page.clock.runFor(61_000);
+  await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
+  await expect(button(page)).toBeVisible();
 });

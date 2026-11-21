@@ -410,6 +410,8 @@
       's.display.volumeKeys': 'The phone\'s volume keys switch pages',
       's.display.autoBrightness': 'Brightness follows the room (light sensor)',
       's.display.nightWhenDark': 'Show the night screen whenever the room is dark',
+      's.display.nightWhenUnreachable': 'Show the night screen when the computer is unreachable',
+      's.display.unreachableNightDelay': 'Wait before dimming after the computer is unreachable (minutes)',
       's.display.proximityWake': 'A hand near the phone wakes the night screen',
       's.display.controlsTop': 'Page dots and the Allow / Deny buttons at the top of the screen',
       's.oled.title': 'OLED burn-in protection',
@@ -8345,7 +8347,30 @@
   for (const [lang, entries] of Object.entries(EXTRA)) {
     if (STRINGS[lang]) Object.assign(STRINGS[lang], entries);
   }
-
+  const UNREACHABLE_NIGHT_LABELS = {
+    tr: ['Bilgisayar ulaşılamazken gece ekranını göster', 'Bilgisayar ulaşılamaz olduktan sonra kararmadan önce bekleme süresi (dakika)'],
+    de: ['Nachtschirm anzeigen, wenn der Computer nicht erreichbar ist', 'Wartezeit nach der Nichterreichbarkeit des Computers bis zum Dimmen (Minuten)'],
+    fr: ['Afficher l’écran de nuit lorsque l’ordinateur est inaccessible', 'Attendre avant de diminuer après l’inaccessibilité de l’ordinateur (minutes)'],
+    es: ['Mostrar la pantalla nocturna cuando el equipo no esté disponible', 'Esperar antes de oscurecer cuando el equipo no esté disponible (minutos)'],
+    it: ['Mostra la schermata notturna quando il computer non è raggiungibile', 'Attesa prima di oscurare dopo che il computer non è raggiungibile (minuti)'],
+    pt: ['Mostrar o ecrã noturno quando o computador estiver inacessível', 'Esperar antes de escurecer após o computador ficar inacessível (minutos)'],
+    'pt-BR': ['Mostrar a tela noturna quando o computador estiver inacessível', 'Aguardar antes de escurecer após o computador ficar inacessível (minutos)'],
+    nl: ['Nachtscherm tonen wanneer de computer niet bereikbaar is', 'Wachttijd voordat gedimd wordt nadat de computer niet bereikbaar is (minuten)'],
+    pl: ['Pokaż ekran nocny, gdy komputer jest nieosiągalny', 'Czas oczekiwania przed przyciemnieniem po utracie połączenia z komputerem (minuty)'],
+    ru: ['Показывать ночной экран, когда компьютер недоступен', 'Ждать перед затемнением после потери связи с компьютером (минуты)'],
+    el: ['Εμφάνιση νυχτερινής οθόνης όταν ο υπολογιστής δεν είναι προσβάσιμος', 'Χρόνος αναμονής πριν τη μείωση φωτισμού όταν ο υπολογιστής δεν είναι προσβάσιμος (λεπτά)'],
+    vi: ['Hiện màn hình ban đêm khi máy tính không thể truy cập', 'Chờ trước khi làm tối sau khi máy tính không thể truy cập (phút)'],
+    zh: ['电脑无法连接时显示夜间屏幕', '电脑无法连接后多久开始变暗（分钟）'],
+    ja: ['パソコンに接続できないとき夜間画面を表示', 'パソコンに接続できなくなってから画面を暗くするまでの待機時間（分）'],
+    ko: ['컴퓨터에 연결할 수 없을 때 야간 화면 표시', '컴퓨터 연결이 끊긴 후 화면을 어둡게 하기까지 대기 시간(분)'],
+    id: ['Tampilkan layar malam saat komputer tidak dapat dijangkau', 'Tunggu sebelum meredup setelah komputer tidak dapat dijangkau (menit)'],
+    th: ['แสดงหน้าจอกลางคืนเมื่อเข้าถึงคอมพิวเตอร์ไม่ได้', 'รอก่อนปรับจอให้มืดหลังจากเข้าถึงคอมพิวเตอร์ไม่ได้ (นาที)'],
+    uk: ['Показувати нічний екран, коли комп’ютер недоступний', 'Чекати перед затемненням після втрати зв’язку з комп’ютером (хвилини)'],
+    hi: ['कंप्यूटर पहुंच से बाहर होने पर रात स्क्रीन दिखाएं', 'कंप्यूटर पहुंच से बाहर होने के बाद रोशनी कम करने से पहले प्रतीक्षा (मिनट)'],
+    cs: ['Zobrazit noční obrazovku, když počítač není dostupný', 'Čekání před ztmavením po ztrátě spojení s počítačem (minuty)'],
+    ar: ['عرض الشاشة الليلية عندما يكون الكمبيوتر غير متصل', 'انتظر قبل التعتيم بعد انقطاع اتصال الكمبيوتر (دقائق)'],
+    'zh-Hant': ['電腦無法連線時顯示夜間螢幕', '電腦無法連線後多久開始調暗（分鐘）'],
+  };
   // The widget and template catalog (widgets.json, templates.json) has no keys of its own: entries are translated by
   // their English text, and anything missing simply stays English. `tc()` is the lookup the settings editor uses.
   const CATALOG = {
@@ -10800,6 +10825,13 @@
     if (data.strings) STRINGS[lang] = { ...STRINGS[lang], ...data.strings };
     if (data.catalog) CATALOG[lang] = { ...CATALOG[lang], ...data.catalog };
     if (data.panel) PANEL[lang] = { ...PANEL[lang], ...data.panel };
+  }
+  for (const [lang, [night, delay]] of Object.entries(UNREACHABLE_NIGHT_LABELS)) {
+    if (!STRINGS[lang]) continue;
+    Object.assign(STRINGS[lang], {
+      's.display.nightWhenUnreachable': night,
+      's.display.unreachableNightDelay': delay,
+    });
   }
   delete window.PhoneBoxLocaleData;
 

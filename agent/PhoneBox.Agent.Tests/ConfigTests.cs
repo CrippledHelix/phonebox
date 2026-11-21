@@ -94,6 +94,17 @@ public class ConfigTests
     }
 
     [Fact]
+    public void UnreachableNightScreenIsOffByDefaultAndDelayIsClamped()
+    {
+        var defaults = Load("{}").Display;
+        Assert.False(defaults.NightWhenUnreachable);
+        Assert.Equal(5, defaults.UnreachableNightDelayMin);
+        Assert.Equal(30, Load("""{ "display": { "nightWhenUnreachable": true, "unreachableNightDelayMin": 999 } }""").Display.UnreachableNightDelayMin);
+        Assert.Equal(1, Load("""{ "display": { "nightWhenUnreachable": true, "unreachableNightDelayMin": -5 } }""").Display.UnreachableNightDelayMin);
+        Assert.True(Load("""{ "display": { "nightWhenUnreachable": true } }""").Display.NightWhenUnreachable);
+    }
+
+    [Fact]
     public void TemplatesExpandIntoWidgets()
     {
         var c = Load("""{ "pages": [ { "template": "music" }, { "template": "music" } ] }""");

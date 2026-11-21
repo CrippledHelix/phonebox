@@ -74,7 +74,7 @@ export const FALLBACK_PAGES = [{
 export const DEFAULT_CFG = {
   weather: { city: 'Tallinn', lat: 59.437, lon: 24.745, unit: 'celsius', model: '' },
   night: { enabled: true, start: '00:30', end: '07:30', brightness: 0.02 },
-  display: { showSeconds: true, idleReturnSec: 90, vibrate: true, finishToast: true, volumeKeys: true },
+  display: { showSeconds: true, idleReturnSec: 90, vibrate: true, finishToast: true, volumeKeys: true, nightWhenUnreachable: false, unreachableNightDelayMin: 5 },
   opencode: { alwaysCountdownSec: 10 },
   pages: FALLBACK_PAGES,
   shortcuts: [],
@@ -86,6 +86,7 @@ export const store = {
 };
 
 export let cfg = PREVIEW ? { ...DEFAULT_CFG, pages: [] } : { ...DEFAULT_CFG, ...store.get('cfg', {}) };
+if (!PREVIEW) cfg = { ...cfg, night: { ...DEFAULT_CFG.night, ...(cfg.night || {}) }, display: { ...DEFAULT_CFG.display, ...(cfg.display || {}) } };
 export let cfgVersion = null;
 export function setCfgVersion(v) { if (v != null) cfgVersion = v; }
 let configRequest = 0;
@@ -2085,6 +2086,18 @@ export function setNight(on) {
   document.body.classList.toggle('night', on);
   applyBrightness(true);
 }
+let unreachableSince = 0;
+
+function reconcileUnreachableNight(now = new Date()) {
+  const enabled = cfg.display?.nightWhenUnreachable === true;
+  if (!enabled) unreachableSince = 0;
+  else if (online === false && unreachableSince === 0) unreachableSince = Date.now();
+  const delayMin = Math.max(1, Math.min(30, +cfg.display?.unreachableNightDelayMin || 5));
+  const unreachable = enabled && unreachableSince > 0
+    && Date.now() - unreachableSince >= delayMin * 60_000;
+  const dark = darkRoom && cfg.display?.nightWhenDark === true;
+  setNight((isNight(now) || dark || unreachable) && Date.now() > wakeUntil);
+}
 /**
  * Before widgets are built: a timer that ran out while the panel was closed rings during the build, so the night
  * screen must already be on if the schedule says so (nightOn is null at start, and new settings may move the night).
@@ -2194,8 +2207,7 @@ export function tick() {
   $('nClock').textContent = fmtHM(now);
   $('nDate').textContent = now.toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' });
   if (darkSince && Date.now() - darkSince > 30_000) darkRoom = true;
-  const dark = darkRoom && cfg.display?.nightWhenDark === true;
-  setNight((isNight(now) || dark) && Date.now() > wakeUntil);
+  reconcileUnreachableNight(now);
   if (!PREVIEW && idleDue() && !navQueue.some((r) => r.kind === 'home')) {
     if (curPage === homeIndex()) { closeSheet(); closeOverview(); lastNav = Date.now(); } // only a sheet to close
     else { navQueue.push({ kind: 'home', at: Date.now(), priority: -1 }); pump(); }
@@ -2249,7 +2261,9 @@ export async function loadConfig() {
     if (request < appliedConfigRequest || request < writeBarrier) return;
     const before = JSON.stringify(cfg);
     const first = cfgVersion === null;
-    cfg = { ...DEFAULT_CFG, ...r.config };
+    cfg = { ...DEFAULT_CFG, ...r.config,
+      night: { ...DEFAULT_CFG.night, ...(r.config?.night || {}) },
+      display: { ...DEFAULT_CFG.display, ...(r.config?.display || {}) } };
     cfgVersion = r.version;
     appliedConfigRequest = request;
     if (first || JSON.stringify(cfg) !== before) {
@@ -2362,7 +2376,10 @@ export function setOnline(on) {
   wakeRender();
   if (on && online !== true) { loadConfig(); loadQuotas(); loadWork(); loadPush(); loadApprovals(); loadCalendar(); }
   const changed = online !== on;
+  if (!on && changed) unreachableSince = unreachableSince || Date.now();
+  if (on && changed) unreachableSince = 0;
   online = on;
+  reconcileUnreachableNight();
   if (changed) emit('state');
 }
 
