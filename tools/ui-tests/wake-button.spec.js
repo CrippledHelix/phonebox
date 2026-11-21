@@ -138,4 +138,6 @@ test('the unreachable night screen keeps the Wake the PC control reachable', asy
   await page.clock.runFor(61_000);
   await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
   await expect(button(page)).toBeVisible();
+  await button(page).click();
+  expect(await wakes(page)).toEqual(['pc1']);
 });

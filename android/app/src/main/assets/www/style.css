@@ -191,7 +191,7 @@ body.night #pagePauseOverlay { display: none; }
 }
 body.offline #offline { display: flex; align-items: center; gap: 5px; }
 /* Wake-on-LAN: under the offline pill, only while the PC is unreachable (main.js shows it when the app can wake it) */
-#wake { position: fixed; top: 38px; right: var(--pad-r); z-index: 6; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; max-width: 280px; }
+#wake { position: fixed; top: 38px; right: var(--pad-r); z-index: 31; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; max-width: 280px; }
 #wake[hidden] { display: none; }
 #wake button { min-height: 44px; padding: 0 18px; border-radius: 99px; border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .1); color: var(--text); font-size: 14px; font-weight: 600; }
 #wake button:disabled { opacity: .6; }

@@ -2089,7 +2089,7 @@ export function setNight(on) {
 let unreachableSince = 0;
 
 function reconcileUnreachableNight(now = new Date()) {
-  const enabled = cfg.display?.nightWhenUnreachable === true;
+  const enabled = !PREVIEW && cfg.display?.nightWhenUnreachable === true;
   if (!enabled) unreachableSince = 0;
   else if (online === false && unreachableSince === 0) unreachableSince = Date.now();
   const delayMin = Math.max(1, Math.min(30, +cfg.display?.unreachableNightDelayMin || 5));
