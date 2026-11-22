@@ -140,13 +140,20 @@ test('a short outage reconnect resets the delay and a second outage starts it ag
   await page.clock.runFor(2_000);
   await page.clock.runFor(238_000);
   await page.evaluate(async () => {
+    const key = 'pb-demo-config';
+    const cfg = JSON.parse(localStorage.getItem(key) || 'null') || {};
+    cfg.display = { ...(cfg.display || {}), nightWhenUnreachable: true, unreachableNightDelayMin: 5 };
+    localStorage.setItem(key, JSON.stringify(cfg));
     window.fetch = window.__demoFetch;
   });
   await page.clock.runFor(2_000);
+  await expect(page.locator('body')).not.toHaveClass(/(^|\s)offline($|\s)/);
   await page.evaluate(async () => { window.fetch = () => Promise.reject(new TypeError('the agent is not running')); });
   await page.clock.runFor(2_000);
-  await page.clock.runFor(118_000);
+  await page.clock.runFor(298_000);
   await expect(page.locator('body')).not.toHaveClass(/(^|\s)night($|\s)/);
+  await page.clock.runFor(4_000);
+  await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
 });
 
 test('touching the outage night screen wakes it for 30 seconds and it returns while still unreachable', async ({ page }) => {
