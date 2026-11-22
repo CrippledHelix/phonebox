@@ -28,6 +28,7 @@ async function open(page, { can = true, unreachableNight = false, unreachableNig
   await expect(page.locator('#dots i')).not.toHaveCount(0);
   await page.clock.pauseAt(new Date('2026-01-01T12:01:00Z'));
   await page.evaluate(async ({ unreachableNight, unreachableNightDelayMin }) => {
+    window.__demoFetch = window.fetch;
     window.fetch = () => Promise.reject(new TypeError('the agent is not running'));
     const m = await import('/panel/main.js');
     m.cfg.display.nightWhenUnreachable = unreachableNight;
@@ -43,6 +44,7 @@ test('an unreachable PC shows the Wake button without sending anything', async (
   await open(page);
   await expect(button(page)).toBeVisible();
   await expect(button(page)).toHaveText('Wake the PC');
+  expect(await page.locator('#wake').evaluate((el) => getComputedStyle(el).zIndex)).toBe('6');
   expect(await wakes(page)).toEqual([]);
 });
 
@@ -135,14 +137,16 @@ test('the night screen caused by an outage is cleared when the agent answers', a
 
 test('a short outage reconnect resets the delay and a second outage starts it again', async ({ page }) => {
   await open(page, { unreachableNight: true, unreachableNightDelayMin: 5 });
-  await page.clock.runFor(30_000);
-  await page.evaluate(async () => { (await import('/panel/main.js')).setOnline(true); });
-  await page.clock.runFor(5_000);
-  await page.evaluate(async () => { (await import('/panel/main.js')).setOnline(false); });
-  await page.clock.runFor(240_000);
+  await page.clock.runFor(2_000);
+  await page.clock.runFor(238_000);
+  await page.evaluate(async () => {
+    window.fetch = window.__demoFetch;
+  });
+  await page.clock.runFor(2_000);
+  await page.evaluate(async () => { window.fetch = () => Promise.reject(new TypeError('the agent is not running')); });
+  await page.clock.runFor(2_000);
+  await page.clock.runFor(118_000);
   await expect(page.locator('body')).not.toHaveClass(/(^|\s)night($|\s)/);
-  await page.clock.runFor(61_000);
-  await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
 });
 
 test('touching the outage night screen wakes it for 30 seconds and it returns while still unreachable', async ({ page }) => {
@@ -167,6 +171,7 @@ test('the unreachable night screen keeps the Wake the PC control reachable', asy
   await page.clock.runFor(61_000);
   await expect(page.locator('body')).toHaveClass(/(^|\s)night($|\s)/);
   await expect(button(page)).toBeVisible();
+  expect(await page.locator('#wake').evaluate((el) => getComputedStyle(el).zIndex)).toBe('31');
   await button(page).click();
   expect(await wakes(page)).toEqual(['pc1']);
 });

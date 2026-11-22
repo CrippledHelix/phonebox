@@ -365,6 +365,8 @@ window.PhoneBoxLocaleData = Object.assign(window.PhoneBoxLocaleData || {}, {
       "s.display.volumeKeys": "Клавіша гучності телефону перемикає сторінки",
       "s.display.autoBrightness": "Яскравість відповідає кімнаті (датчик світла)",
       "s.display.nightWhenDark": "Показувати нічний екран, коли кімната темна",
+      "s.display.nightWhenUnreachable": "Показувати нічний екран, коли комп’ютер недоступний",
+      "s.display.unreachableNightDelay": "Хвилини до появи нічного екрана",
       "s.display.proximityWake": "Рука біля телефону розбудить нічний екран",
       "s.display.controlsTop": "Крапки сторінки і кнопки Дозволити/ Заборонити у верхній частині екрана",
       "s.oled.title": "Захист від вигорання OLED",

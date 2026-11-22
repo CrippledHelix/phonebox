@@ -365,6 +365,8 @@ window.PhoneBoxLocaleData = Object.assign(window.PhoneBoxLocaleData || {}, {
       "s.display.volumeKeys": "電話的音量鍵可以切換頁面",
       "s.display.autoBrightness": "亮度跟著房間的變化 ( 光線感應器 )",
       "s.display.nightWhenDark": "當房間黑暗時顯示夜幕屏幕",
+      "s.display.nightWhenUnreachable": "電腦無法連線時顯示夜幕螢幕",
+      "s.display.unreachableNightDelay": "夜幕螢幕出現前的分鐘數",
       "s.display.proximityWake": "靠近手機的手會喚醒夜幕屏幕",
       "s.display.controlsTop": "頁點和屏幕上方的允許 / 拒絕按鈕",
       "s.oled.title": "OLED的燒損保護",

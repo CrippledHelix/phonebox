@@ -365,6 +365,8 @@ window.PhoneBoxLocaleData = Object.assign(window.PhoneBoxLocaleData || {}, {
       "s.display.volumeKeys": "Tombol volume telepon untuk mengganti halaman",
       "s.display.autoBrightness": "Kecerahan mengikuti ruangan (sensor cahaya)",
       "s.display.nightWhenDark": "Tampilkan layar malam ketika ruangan gelap",
+      "s.display.nightWhenUnreachable": "Tampilkan layar malam saat komputer tidak dapat dijangkau",
+      "s.display.unreachableNightDelay": "Menit sebelum layar malam muncul",
       "s.display.proximityWake": "Sebuah tangan di dekat telepon bangun layar malam",
       "s.display.controlsTop": "Titik-titik halaman dan tombol Izinkan / Tolak di bagian atas layar",
       "s.oled.title": "OLED perlindungan terbakar",

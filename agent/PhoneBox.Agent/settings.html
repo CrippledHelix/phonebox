@@ -716,7 +716,7 @@ nav a.on::before { color: var(--accent); }
         <label class="check"><input type="checkbox" data-bind="display.autoBrightness"> <span data-i18n="s.display.autoBrightness">Brightness follows the room (light sensor)</span></label>
         <label class="check"><input type="checkbox" data-bind="display.nightWhenDark"> <span data-i18n="s.display.nightWhenDark">Show the night screen whenever the room is dark</span></label>
         <label class="check"><input type="checkbox" data-bind="display.nightWhenUnreachable"> <span data-i18n="s.display.nightWhenUnreachable">Show the night screen when the computer is unreachable</span></label>
-        <div class="field" style="max-width:420px"><label data-i18n="s.display.unreachableNightDelay">Wait before dimming after the computer is unreachable (minutes)</label><input type="number" min="1" max="30" data-bind="display.unreachableNightDelayMin" data-type="int"></div>
+        <div class="field" style="max-width:420px"><label data-i18n="s.display.unreachableNightDelay">Minutes before the night screen comes on</label><input type="number" min="1" max="30" data-bind="display.unreachableNightDelayMin" data-type="int"></div>
         <label class="check"><input type="checkbox" data-bind="display.proximityWake"> <span data-i18n="s.display.proximityWake">A hand near the phone wakes the night screen</span></label>
         <label class="check"><input type="checkbox" data-bind="display.controlsTop"> <span data-i18n="s.display.controlsTop">Page dots and the Allow / Deny buttons at the top of the screen</span></label>
       </div>

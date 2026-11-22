@@ -411,7 +411,7 @@
       's.display.autoBrightness': 'Brightness follows the room (light sensor)',
       's.display.nightWhenDark': 'Show the night screen whenever the room is dark',
       's.display.nightWhenUnreachable': 'Show the night screen when the computer is unreachable',
-      's.display.unreachableNightDelay': 'Wait before dimming after the computer is unreachable (minutes)',
+      's.display.unreachableNightDelay': 'Minutes before the night screen comes on',
       's.display.proximityWake': 'A hand near the phone wakes the night screen',
       's.display.controlsTop': 'Page dots and the Allow / Deny buttons at the top of the screen',
       's.oled.title': 'OLED burn-in protection',
@@ -1239,6 +1239,8 @@
       's.display.volumeKeys': 'Telefonun ses tuşları sayfa değiştirsin',
       's.display.autoBrightness': 'Parlaklık ortamı izlesin (ışık sensörü)',
       's.display.nightWhenDark': 'Ortam karanlık olduğunda gece ekranını göster',
+      's.display.nightWhenUnreachable': 'Bilgisayar ulaşılamazken gece ekranını göster',
+      's.display.unreachableNightDelay': 'Gece ekranının açılmasından önceki dakika',
       's.display.proximityWake': 'Telefonun yakınına el yaklaştırıldığında gece ekranını uyandır',
       's.display.controlsTop': 'Sayfa noktaları ve İzin ver / Reddet düğmeleri ekranın üstünde',
       's.oled.title': 'OLED yanma koruması',
@@ -1692,6 +1694,8 @@
       's.display.volumeKeys': 'Lautstärketasten wechseln Seiten',
       's.display.autoBrightness': 'Helligkeit an Umgebung anpassen (Lichtsensor)',
       's.display.nightWhenDark': 'Nachtbildschirm bei Dunkelheit anzeigen',
+      's.display.nightWhenUnreachable': 'Nachtschirm anzeigen, wenn der Computer nicht erreichbar ist',
+      's.display.unreachableNightDelay': 'Minuten bis der Nachtschirm erscheint',
       's.display.proximityWake': 'Hand in Nähe weckt den Nachtbildschirm',
       's.display.controlsTop': 'Seitenpunkte und die Schaltflächen Erlauben / Ablehnen oben auf dem Bildschirm',
       's.oled.title': 'OLED-Einbrennschutz',
@@ -2136,6 +2140,8 @@
       's.display.volumeKeys': 'Les touches de volume changent de page',
       's.display.autoBrightness': 'Luminosité automatique (capteur de lumière)',
       's.display.nightWhenDark': 'Afficher l\'écran de nuit dans le noir',
+      's.display.nightWhenUnreachable': 'Afficher l’écran de nuit lorsque l’ordinateur est inaccessible',
+      's.display.unreachableNightDelay': 'Minutes avant l’apparition de l’écran de nuit',
       's.display.proximityWake': 'Une main près du téléphone réveille l\'écran de nuit',
       's.display.controlsTop': 'Points de page et boutons Autoriser / Refuser en haut de l’écran',
       's.oled.title': 'Protection OLED',
@@ -2580,6 +2586,8 @@
       's.display.volumeKeys': 'Las teclas de volumen cambian de página',
       's.display.autoBrightness': 'Brillo automático (sensor de luz)',
       's.display.nightWhenDark': 'Mostrar pantalla nocturna cuando esté oscuro',
+      's.display.nightWhenUnreachable': 'Mostrar la pantalla nocturna cuando el equipo no esté disponible',
+      's.display.unreachableNightDelay': 'Minutos antes de que aparezca la pantalla nocturna',
       's.display.proximityWake': 'Acercar la mano despierta la pantalla nocturna',
       's.display.controlsTop': 'Puntos de página y botones Permitir / Denegar en la parte superior de la pantalla',
       's.oled.title': 'Protección OLED',
@@ -3024,6 +3032,8 @@
       's.display.volumeKeys': 'I tasti volume cambiano pagina',
       's.display.autoBrightness': 'Luminosità automatica (sensore luce)',
       's.display.nightWhenDark': 'Mostra schermo notte al buio',
+      's.display.nightWhenUnreachable': 'Mostra la schermata notturna quando il computer non è raggiungibile',
+      's.display.unreachableNightDelay': 'Minuti prima della comparsa della schermata notturna',
       's.display.proximityWake': 'Una mano vicino sveglia lo schermo notte',
       's.display.controlsTop': 'Punti di pagina e pulsanti Consenti / Nega in alto sullo schermo',
       's.oled.title': 'Protezione OLED',
@@ -3468,6 +3478,8 @@
       's.display.volumeKeys': 'Teclas de volume mudam de página',
       's.display.autoBrightness': 'Brilho automático (sensor de luz)',
       's.display.nightWhenDark': 'Mostrar ecrã noturno no escuro',
+      's.display.nightWhenUnreachable': 'Mostrar o ecrã noturno quando o computador estiver inacessível',
+      's.display.unreachableNightDelay': 'Minutos antes de aparecer o ecrã noturno',
       's.display.proximityWake': 'Mão perto acorda o ecrã noturno',
       's.display.controlsTop': 'Pontos de página e botões Permitir / Recusar no topo do ecrã',
       's.oled.title': 'Proteção OLED',
@@ -3893,6 +3905,8 @@
       's.display.volumeKeys': 'Teclas de volume mudam de página',
       's.display.autoBrightness': 'Brilho automático (sensor de luz)',
       's.display.nightWhenDark': 'Mostrar tela noturna no escuro',
+      's.display.nightWhenUnreachable': 'Mostrar a tela noturna quando o computador estiver inacessível',
+      's.display.unreachableNightDelay': 'Minutos antes de aparecer a tela noturna',
       's.display.proximityWake': 'Mão por perto acorda a tela noturna',
       's.display.controlsTop': 'Pontos de página e botões Permitir / Recusar no topo da tela',
       's.oled.title': 'Proteção OLED',
@@ -4784,6 +4798,8 @@
       's.display.volumeKeys': 'Volumeknoppen wisselen pagina\'s',
       's.display.autoBrightness': 'Automatische helderheid (lichtsensor)',
       's.display.nightWhenDark': 'Nachtscherm tonen als het donker is',
+      's.display.nightWhenUnreachable': 'Nachtscherm tonen wanneer de computer niet bereikbaar is',
+      's.display.unreachableNightDelay': 'Minuten voordat het nachtscherm verschijnt',
       's.display.proximityWake': 'Hand nabij wekt het nachtscherm',
       's.display.controlsTop': 'Paginapunten en de knoppen Toestaan / Weigeren boven aan het scherm',
       's.oled.title': 'OLED-inbrandbescherming',
@@ -5228,6 +5244,8 @@
       's.display.volumeKeys': 'Klawisze głośności zmieniają strony',
       's.display.autoBrightness': 'Automatyczna jasność (czujnik światła)',
       's.display.nightWhenDark': 'Pokazuj ekran nocny, gdy jest ciemno',
+      's.display.nightWhenUnreachable': 'Pokaż ekran nocny, gdy komputer jest nieosiągalny',
+      's.display.unreachableNightDelay': 'Minuty przed pokazaniem ekranu nocnego',
       's.display.proximityWake': 'Ręka blisko telefonu wybudza ekran nocny',
       's.display.controlsTop': 'Kropki stron i przyciski Zezwól / Odmów u góry ekranu',
       's.oled.title': 'Ochrona ekranu OLED',
@@ -5672,6 +5690,8 @@
       's.display.volumeKeys': 'Кнопки громкости переключают страницы',
       's.display.autoBrightness': 'Автояркость (датчик освещённости)',
       's.display.nightWhenDark': 'Показывать ночной экран в темноте',
+      's.display.nightWhenUnreachable': 'Показывать ночной экран, когда компьютер недоступен',
+      's.display.unreachableNightDelay': 'Минут до появления ночного экрана',
       's.display.proximityWake': 'Пробуждать ночной экран взмахом руки',
       's.display.controlsTop': 'Точки страниц и кнопки «Разрешить» / «Отклонить» вверху экрана',
       's.oled.title': 'Защита OLED от выгорания',
@@ -6130,6 +6150,8 @@
       's.display.volumeKeys': 'Αλλαγή σελίδας με τα πλήκτρα έντασης του τηλεφώνου',
       's.display.autoBrightness': 'Η φωτεινότητα προσαρμόζεται στο φως του δωματίου (αισθητήρας φωτός)',
       's.display.nightWhenDark': 'Εμφάνιση της νυχτερινής οθόνης όταν το δωμάτιο είναι σκοτεινό',
+      's.display.nightWhenUnreachable': 'Εμφάνιση νυχτερινής οθόνης όταν ο υπολογιστής δεν είναι προσβάσιμος',
+      's.display.unreachableNightDelay': 'Λεπτά πριν εμφανιστεί η νυχτερινή οθόνη',
       's.display.proximityWake': 'Η νυχτερινή οθόνη ξυπνά όταν πλησιάζεις το χέρι σου στο τηλέφωνο',
       's.display.controlsTop': 'Τελείες σελίδων και κουμπιά Αποδοχή / Απόρριψη στο επάνω μέρος της οθόνης',
       's.oled.title': 'Προστασία OLED από κάψιμο οθόνης (burn-in)',
@@ -7009,6 +7031,8 @@
       's.display.volumeKeys': 'Phím âm lượng của điện thoại chuyển trang',
       's.display.autoBrightness': 'Độ sáng theo phòng (cảm biến ánh sáng)',
       's.display.nightWhenDark': 'Hiện màn hình ban đêm mỗi khi phòng tối',
+      's.display.nightWhenUnreachable': 'Hiện màn hình ban đêm khi máy tính không thể truy cập',
+      's.display.unreachableNightDelay': 'Số phút trước khi màn hình ban đêm hiện ra',
       's.display.proximityWake': 'Đưa tay gần điện thoại để đánh thức màn hình ban đêm',
       's.display.controlsTop': 'Chấm trang và nút Cho phép / Từ chối ở phía trên màn hình',
       's.oled.title': 'Bảo vệ cháy màn OLED',
@@ -7835,6 +7859,8 @@
       's.display.volumeKeys': '使用手机音量键切换页面',
       's.display.autoBrightness': '亮度随环境变化（光线传感器）',
       's.display.nightWhenDark': '环境变暗时显示夜间屏幕',
+      's.display.nightWhenUnreachable': '电脑无法连接时显示夜间屏幕',
+      's.display.unreachableNightDelay': '夜间屏幕出现前的分钟数',
       's.display.proximityWake': '手靠近手机时唤醒夜间屏幕',
       's.display.controlsTop': '页面圆点和“允许 / 拒绝”按钮放在屏幕顶部',
       's.oled.title': 'OLED 防烧屏保护',
@@ -8347,30 +8373,6 @@
   for (const [lang, entries] of Object.entries(EXTRA)) {
     if (STRINGS[lang]) Object.assign(STRINGS[lang], entries);
   }
-  const UNREACHABLE_NIGHT_LABELS = {
-    tr: ['Bilgisayar ulaşılamazken gece ekranını göster', 'Bilgisayar ulaşılamaz olduktan sonra kararmadan önce bekleme süresi (dakika)'],
-    de: ['Nachtschirm anzeigen, wenn der Computer nicht erreichbar ist', 'Wartezeit nach der Nichterreichbarkeit des Computers bis zum Dimmen (Minuten)'],
-    fr: ['Afficher l’écran de nuit lorsque l’ordinateur est inaccessible', 'Attendre avant de diminuer après l’inaccessibilité de l’ordinateur (minutes)'],
-    es: ['Mostrar la pantalla nocturna cuando el equipo no esté disponible', 'Esperar antes de oscurecer cuando el equipo no esté disponible (minutos)'],
-    it: ['Mostra la schermata notturna quando il computer non è raggiungibile', 'Attesa prima di oscurare dopo che il computer non è raggiungibile (minuti)'],
-    pt: ['Mostrar o ecrã noturno quando o computador estiver inacessível', 'Esperar antes de escurecer após o computador ficar inacessível (minutos)'],
-    'pt-BR': ['Mostrar a tela noturna quando o computador estiver inacessível', 'Aguardar antes de escurecer após o computador ficar inacessível (minutos)'],
-    nl: ['Nachtscherm tonen wanneer de computer niet bereikbaar is', 'Wachttijd voordat gedimd wordt nadat de computer niet bereikbaar is (minuten)'],
-    pl: ['Pokaż ekran nocny, gdy komputer jest nieosiągalny', 'Czas oczekiwania przed przyciemnieniem po utracie połączenia z komputerem (minuty)'],
-    ru: ['Показывать ночной экран, когда компьютер недоступен', 'Ждать перед затемнением после потери связи с компьютером (минуты)'],
-    el: ['Εμφάνιση νυχτερινής οθόνης όταν ο υπολογιστής δεν είναι προσβάσιμος', 'Χρόνος αναμονής πριν τη μείωση φωτισμού όταν ο υπολογιστής δεν είναι προσβάσιμος (λεπτά)'],
-    vi: ['Hiện màn hình ban đêm khi máy tính không thể truy cập', 'Chờ trước khi làm tối sau khi máy tính không thể truy cập (phút)'],
-    zh: ['电脑无法连接时显示夜间屏幕', '电脑无法连接后多久开始变暗（分钟）'],
-    ja: ['パソコンに接続できないとき夜間画面を表示', 'パソコンに接続できなくなってから画面を暗くするまでの待機時間（分）'],
-    ko: ['컴퓨터에 연결할 수 없을 때 야간 화면 표시', '컴퓨터 연결이 끊긴 후 화면을 어둡게 하기까지 대기 시간(분)'],
-    id: ['Tampilkan layar malam saat komputer tidak dapat dijangkau', 'Tunggu sebelum meredup setelah komputer tidak dapat dijangkau (menit)'],
-    th: ['แสดงหน้าจอกลางคืนเมื่อเข้าถึงคอมพิวเตอร์ไม่ได้', 'รอก่อนปรับจอให้มืดหลังจากเข้าถึงคอมพิวเตอร์ไม่ได้ (นาที)'],
-    uk: ['Показувати нічний екран, коли комп’ютер недоступний', 'Чекати перед затемненням після втрати зв’язку з комп’ютером (хвилини)'],
-    hi: ['कंप्यूटर पहुंच से बाहर होने पर रात स्क्रीन दिखाएं', 'कंप्यूटर पहुंच से बाहर होने के बाद रोशनी कम करने से पहले प्रतीक्षा (मिनट)'],
-    cs: ['Zobrazit noční obrazovku, když počítač není dostupný', 'Čekání před ztmavením po ztrátě spojení s počítačem (minuty)'],
-    ar: ['عرض الشاشة الليلية عندما يكون الكمبيوتر غير متصل', 'انتظر قبل التعتيم بعد انقطاع اتصال الكمبيوتر (دقائق)'],
-    'zh-Hant': ['電腦無法連線時顯示夜間螢幕', '電腦無法連線後多久開始調暗（分鐘）'],
-  };
   // The widget and template catalog (widgets.json, templates.json) has no keys of its own: entries are translated by
   // their English text, and anything missing simply stays English. `tc()` is the lookup the settings editor uses.
   const CATALOG = {
@@ -10825,13 +10827,6 @@
     if (data.strings) STRINGS[lang] = { ...STRINGS[lang], ...data.strings };
     if (data.catalog) CATALOG[lang] = { ...CATALOG[lang], ...data.catalog };
     if (data.panel) PANEL[lang] = { ...PANEL[lang], ...data.panel };
-  }
-  for (const [lang, [night, delay]] of Object.entries(UNREACHABLE_NIGHT_LABELS)) {
-    if (!STRINGS[lang]) continue;
-    Object.assign(STRINGS[lang], {
-      's.display.nightWhenUnreachable': night,
-      's.display.unreachableNightDelay': delay,
-    });
   }
   delete window.PhoneBoxLocaleData;
 

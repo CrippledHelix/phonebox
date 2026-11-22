@@ -86,7 +86,6 @@ export const store = {
 };
 
 export let cfg = PREVIEW ? { ...DEFAULT_CFG, pages: [] } : { ...DEFAULT_CFG, ...store.get('cfg', {}) };
-if (!PREVIEW) cfg = { ...cfg, night: { ...DEFAULT_CFG.night, ...(cfg.night || {}) }, display: { ...DEFAULT_CFG.display, ...(cfg.display || {}) } };
 export let cfgVersion = null;
 export function setCfgVersion(v) { if (v != null) cfgVersion = v; }
 let configRequest = 0;
@@ -2261,9 +2260,7 @@ export async function loadConfig() {
     if (request < appliedConfigRequest || request < writeBarrier) return;
     const before = JSON.stringify(cfg);
     const first = cfgVersion === null;
-    cfg = { ...DEFAULT_CFG, ...r.config,
-      night: { ...DEFAULT_CFG.night, ...(r.config?.night || {}) },
-      display: { ...DEFAULT_CFG.display, ...(r.config?.display || {}) } };
+    cfg = { ...DEFAULT_CFG, ...r.config };
     cfgVersion = r.version;
     appliedConfigRequest = request;
     if (first || JSON.stringify(cfg) !== before) {

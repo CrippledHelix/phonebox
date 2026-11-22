@@ -365,6 +365,8 @@ window.PhoneBoxLocaleData = Object.assign(window.PhoneBoxLocaleData || {}, {
       "s.display.volumeKeys": "Hlasitými klávesami telefonu přepnete stránky",
       "s.display.autoBrightness": "Jas sleduje místnost (světelný senzor)",
       "s.display.nightWhenDark": "Zobrazit noční obrazovku, kdykoli je místnost tmavá",
+      "s.display.nightWhenUnreachable": "Zobrazit noční obrazovku, když počítač není dostupný",
+      "s.display.unreachableNightDelay": "Minuty před zobrazením noční obrazovky",
       "s.display.proximityWake": "Ruka u telefonu probudí noční obrazovku",
       "s.display.controlsTop": "Tečky stránky a tlačítka Povolit / Zakázat v horní části obrazovky",
       "s.oled.title": "Ochrana proti spálení OLED",

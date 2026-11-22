@@ -365,6 +365,8 @@ window.PhoneBoxLocaleData = Object.assign(window.PhoneBoxLocaleData || {}, {
       "s.display.volumeKeys": "電話のボリュームキーでページを切り替えます",
       "s.display.autoBrightness": "明るさは部屋に従う（光センサー）",
       "s.display.nightWhenDark": "部屋が暗いときは夜間スクリーンを表示します",
+      "s.display.nightWhenUnreachable": "パソコンに接続できないとき夜間画面を表示",
+      "s.display.unreachableNightDelay": "夜間スクリーンが表示されるまでの分数",
       "s.display.proximityWake": "電話の近くで手を動かすと夜間スクリーンが起動します",
       "s.display.controlsTop": "スクリーンの上部にあるページドットと許可/拒否ボタン",
       "s.oled.title": "OLEDバーンイン保護",
