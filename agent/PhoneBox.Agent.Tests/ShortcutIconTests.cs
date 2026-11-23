@@ -8,6 +8,7 @@ public sealed class ShortcutIconTests
     [InlineData("   ", false)]
     [InlineData("builtin:lock", false)]
     [InlineData("builtin:mute", false)]
+    [InlineData("builtin:mic-mute", false)]
     [InlineData("BUILTIN:MONITOR-OFF", false)]
     [InlineData("https://github.com", false)]
     [InlineData("http://example.com", false)]

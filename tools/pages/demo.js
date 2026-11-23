@@ -103,6 +103,7 @@
   async function config() {
     const c = await loadConfig();
     muteKeys = (c.shortcuts || []).filter((x) => x.cmd === 'builtin:mute').map((x) => x.id);
+    micMuteKeys = (c.shortcuts || []).filter((x) => x.cmd === 'builtin:mic-mute').map((x) => x.id);
     cycleLists = Object.fromEntries((c.shortcuts || []).filter((x) => x.cmd === 'builtin:cycle').map((x) => [x.id, JSON.stringify(x.cycle || [])]));
     return c;
   }
@@ -128,7 +129,7 @@
       // iconRev / iconUpload: the agent sets them when a shortcut has a picture (and when the user uploaded it). The demo
       // has no uploads and serves no /agent/api/shortcuts/icon, so a config that sets them also needs that image mocked
       // (see button-cover.spec.js); without one the key keeps its emoji.
-      shortcuts: (c.shortcuts || []).map(({ id, label, icon, color, toggle, cmd, longPress, cycle, iconRev, iconUpload }) => ({ id, label, icon, color, toggle: !!toggle || cmd === 'builtin:mute', cycle: cmd === 'builtin:cycle' && (cycle || []).length > 0, hold: !!longPress && longPress !== id && (c.shortcuts || []).some((x) => x.id === longPress), iconRev: iconRev ?? null, iconUpload: iconUpload === true })),
+      shortcuts: (c.shortcuts || []).map(({ id, label, icon, color, toggle, cmd, longPress, cycle, iconRev, iconUpload }) => ({ id, label, icon, color, toggle: !!toggle || cmd === 'builtin:mute' || cmd === 'builtin:mic-mute', cycle: cmd === 'builtin:cycle' && (cycle || []).length > 0, hold: !!longPress && longPress !== id && (c.shortcuts || []).some((x) => x.id === longPress), iconRev: iconRev ?? null, iconUpload: iconUpload === true })),
       rules: (c.rules || []).map(({ id, name, enabled, when }) => ({ id, name, enabled: enabled !== false, when })),
       charge: { enabled: !!c.charge?.enabled, min: c.charge?.min ?? 50, max: c.charge?.max ?? 80 },
     };
@@ -221,7 +222,11 @@
       // the microphone is "in use" for 20 s of every minute, to show the On air widget
       privacy: (() => { const on = (now() / 1000) % 60 < 20; return { mic: on, camera: false, micApps: on ? ['Zoom'] : [], cameraApps: [] }; })(),
       obs: { streaming: !!obs.streamingSince, recording: !!obs.recordingSince, recordPaused: obs.paused },
-      toggles: { ...toggles, ...Object.fromEntries(muteKeys.map((id) => [id, audio.muted])) },
+      toggles: {
+        ...toggles,
+        ...Object.fromEntries(muteKeys.map((id) => [id, audio.muted])),
+        ...Object.fromEntries(micMuteKeys.map((id) => [id, deck.audio.devices.filter(d => d.direction === 'input').every(d => d.muted)])),
+      },
       // a face counts only for the list it was made for (an edited list starts over)
       cycles: Object.fromEntries(Object.entries(cycles).filter(([id, v]) => cycleLists[id] === v.list).map(([id, v]) => [id, v.target])),
     };
@@ -231,6 +236,7 @@
   let cycleLists = {}; // cycle key id -> its list now, as JSON
   const cycles = {}, cyclePos = {}; // cycle keys: { target id, list } of the key that ran last, and its position in the list
   let muteKeys = ['mute']; // ids of the shortcuts whose command is builtin:mute; their state is the computer's
+  let micMuteKeys = []; // ids whose command is builtin:mic-mute
 
   // made-up OBS: streaming for a while, buttons and scenes work
   const dc = { muted: false, deaf: false, in: 'c1', sharing: null, chatIn: null, chatSeen: false, noteAt: now() - 60000 }; // a fixed time, as the agent's notifications have

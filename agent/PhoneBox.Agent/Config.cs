@@ -85,7 +85,7 @@ public sealed class AgentConfig
         shortcuts = Shortcuts.Select(s =>
         {
             var pic = shortcutIcon?.Invoke(s);
-            return new { s.Id, s.Label, s.Icon, s.Color, toggle = s.Toggle || s.Cmd == "builtin:mute", hold = s.LongPress is not null, cycle = s.Cmd == "builtin:cycle" && s.Cycle is { Count: > 0 }, iconRev = pic?.Rev, iconUpload = pic?.Upload == true };
+            return new { s.Id, s.Label, s.Icon, s.Color, toggle = s.Toggle || s.Cmd is "builtin:mute" or "builtin:mic-mute", hold = s.LongPress is not null, cycle = s.Cmd == "builtin:cycle" && s.Cycle is { Count: > 0 }, iconRev = pic?.Rev, iconUpload = pic?.Upload == true };
         }),
         // names only (for the Rules widget); what a rule matches on stays here
         rules = Rules.Select(r => new { r.Id, r.Name, r.Enabled, r.When }),
@@ -475,7 +475,7 @@ public sealed class Shortcut
     [JsonConverter(typeof(IconJsonConverter))]
     public string Icon { get; set; } = "";
     public string Color { get; set; } = "#6b7280";
-    /// <summary>A program, address or file; or builtin:lock / monitor-off / mute / keys / text / macro.</summary>
+    /// <summary>A program, address or file; or builtin:lock / monitor-off / mute / mic-mute / keys / text / macro.</summary>
     public string Cmd { get; set; } = "";
     /// <summary>Program arguments; the key combination for builtin:keys ("ctrl+shift+m"); the text for builtin:text.</summary>
     public string? Args { get; set; }

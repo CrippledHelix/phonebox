@@ -1,6 +1,10 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
+#if WINDOWS
+using NAudio.CoreAudioApi;
+#endif
+
 namespace PhoneBox.Agent;
 
 /// <summary>
@@ -31,7 +35,7 @@ public static class Shortcuts
         var on = State(sc, push, audio) ?? false;
         var target = on && sc.OffCmd is not null ? new Shortcut { Label = sc.Label, Cmd = sc.OffCmd, Args = sc.OffArgs, Cwd = sc.Cwd } : sc;
         var err = Execute(target, log, cfg, depth, push, audio);
-        if (err is null && sc.StateKey is null && sc.Cmd != "builtin:mute") Remembered[sc.Id] = !on;
+        if (err is null && sc.StateKey is null && sc.Cmd is not "builtin:mute" and not "builtin:mic-mute") Remembered[sc.Id] = !on;
         return err;
     }
 
@@ -39,7 +43,7 @@ public static class Shortcuts
     public static Dictionary<string, bool>? States(AgentConfig cfg, PushStore push, AudioControl audio)
     {
         Dictionary<string, bool>? map = null;
-        foreach (var sc in cfg.Shortcuts.Where(s => s.Toggle || s.Cmd == "builtin:mute"))
+        foreach (var sc in cfg.Shortcuts.Where(s => s.Toggle || s.Cmd is "builtin:mute" or "builtin:mic-mute"))
             if (State(sc, push, audio) is { } on) (map ??= [])[sc.Id] = on;
         return map;
     }
@@ -47,6 +51,11 @@ public static class Shortcuts
     public static bool? State(Shortcut sc, PushStore? push, AudioControl? audio)
     {
         if (sc.Cmd == "builtin:mute" && sc.StateKey is null) return audio?.Snapshot()?.Muted;
+#if WINDOWS
+        if (sc.Cmd == "builtin:mic-mute" && sc.StateKey is null) return MicrophonesMuted();
+#else
+        if (sc.Cmd == "builtin:mic-mute" && sc.StateKey is null) return null;
+#endif
         if (sc.StateKey is not null) return PushIsOn(push, sc.StateKey);
         return Remembered.TryGetValue(sc.Id, out var r) && r;
     }
@@ -267,6 +276,9 @@ public static class Shortcuts
                 case "builtin:mute":
                     Keys.Tap(Keys.VK_VOLUME_MUTE);
                     break;
+                case "builtin:mic-mute":
+                    ToggleMicrophones();
+                    break;
 #else
                 case "builtin:lock":
                     if (OperatingSystem.IsMacOS()) Unix("pmset", "displaysleepnow");
@@ -280,6 +292,8 @@ public static class Shortcuts
                     // false: the output cannot be muted (macOS) or wpctl / pactl failed; a caller must not count it as done
                     if (!(audio ?? new AudioControl()).ToggleMute()) throw new InvalidOperationException("could not toggle mute on the current output");
                     break;
+                case "builtin:mic-mute":
+                    throw new InvalidOperationException("microphone emergency mute is only available on Windows");
 #endif
                 default:
                     Start(sc);
@@ -382,6 +396,70 @@ public static class Shortcuts
         if (window == 0) throw new InvalidOperationException($"could not turn the display off (error {Marshal.GetLastPInvokeError()})");
         try { SendMessage(window, 0x0112 /* WM_SYSCOMMAND */, 0xF170 /* SC_MONITORPOWER */, 2 /* off */); }
         finally { DestroyWindow(window); }
+    }
+    private static void ToggleMicrophones()
+    {
+        using var en = new MMDeviceEnumerator();
+        using var devices = en.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
+        var found = false;
+        var anyUnmuted = false;
+        foreach (var device in devices)
+        {
+            using (device)
+            {
+                try
+                {
+                    found = true;
+                    if (!device.AudioEndpointVolume.Mute) anyUnmuted = true;
+                }
+                catch (Exception ex) when (ex is COMException or InvalidOperationException)
+                {
+                }
+            }
+        }
+        if (!found) throw new InvalidOperationException("no controllable microphones are available");
+
+        using var enNext = new MMDeviceEnumerator();
+        using var devicesNext = enNext.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
+        var changed = 0;
+        var targetMuted = anyUnmuted;
+        foreach (var device in devicesNext)
+        {
+            using (device)
+            {
+                try
+                {
+                    device.AudioEndpointVolume.Mute = targetMuted;
+                    changed++;
+                }
+                catch (Exception ex) when (ex is COMException or InvalidOperationException)
+                {
+                }
+            }
+        }
+        if (changed == 0) throw new InvalidOperationException("no controllable microphones are available");
+    }
+    private static bool? MicrophonesMuted()
+    {
+        try
+        {
+            using var en = new MMDeviceEnumerator();
+            using var devices = en.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
+            var found = false;
+            foreach (var device in devices)
+            {
+                using (device)
+                {
+                    found = true;
+                    if (!device.AudioEndpointVolume.Mute) return false;
+                }
+            }
+            return found ? true : null;
+        }
+        catch (Exception ex) when (ex is COMException or InvalidOperationException)
+        {
+            return null;
+        }
     }
     [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern nint CreateWindowEx(uint exStyle, string className, string windowName, uint style,

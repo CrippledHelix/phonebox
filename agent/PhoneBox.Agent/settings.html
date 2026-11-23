@@ -1169,6 +1169,7 @@ const PRESETS = [
   ['ms-screenclip:', 'Screen snip'],
   ['taskmgr.exe', 'Task Manager'],
   ['builtin:mute', 'Built-in: toggle mute'],
+  ['builtin:mic-mute', 'Built-in: mute microphones'],
   ['builtin:monitor-off', 'Built-in: turn monitors off'],
   ['builtin:lock', 'Built-in: lock the PC'],
   ['builtin:wake', 'Built-in: wake a computer (Wake-on-LAN; args: MAC)'],
@@ -3052,10 +3053,11 @@ function actionFields(s, upd, text, cmdIn, preset) {
   if (osName === 'linux' && kind !== 'run' && kind !== 'cycle') fields.push(h('p', { class: 'hint' }, t('s.k.linuxNeedsXdotool')));
 
   const isMute = s.cmd === 'builtin:mute';
+  const isMicMute = s.cmd === 'builtin:mic-mute';
   if (kind !== 'cycle') fields.push(h('label', { class: 'check', style: { marginTop: '4px' } },
-    h('input', { type: 'checkbox', checked: !!s.toggle || isMute, disabled: isMute, onchange: (e) => { s.toggle = e.target.checked; changed(); renderEditor(); } }),
+    h('input', { type: 'checkbox', checked: !!s.toggle || isMute || isMicMute, disabled: isMute || isMicMute, onchange: (e) => { s.toggle = e.target.checked; changed(); renderEditor(); } }),
     isMute ? t('s.k.toggleLabelMute') : t('s.k.toggleLabel')));
-  if (s.toggle && !isMute) {
+  if (s.toggle && !isMute && !isMicMute) {
     fields.push(text('stateKey', t('s.k.stateKey'), 'e.g. teams-muted',
       tc('A value pushed to /api/push/<key> (true / on / 1 = on). Without it the phone shows the state after each tap.')));
     if (kind === 'run') fields.push(text('offCmd', t('s.cd.offCmdPlaceholder'), t('s.cd.offCmdHint')), text('offArgs', t('s.k.offArgs'), ''));

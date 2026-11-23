@@ -163,7 +163,7 @@ public sealed class RuleEngine(ConfigStore config, PushStore push, SessionMonito
             case "shortcut" when !string.IsNullOrWhiteSpace(r.Shortcut):
                 var cfgNow = config.Get();
                 if (r.WhileActive && cfgNow.Shortcuts.FirstOrDefault(s => s.Id == r.Shortcut) is { } target
-                    && (target.Toggle || target.Cmd == "builtin:mute") && Shortcuts.State(target, push, audio) == true)
+                    && (target.Toggle || target.Cmd is "builtin:mute" or "builtin:mic-mute") && Shortcuts.State(target, push, audio) == true)
                     break;
                 if (Shortcuts.Run(cfgNow, r.Shortcut, log, push, audio) is { } error) log.LogWarning("rule {Id}: {Error}", r.Id, error);
                 break;
@@ -179,7 +179,7 @@ public sealed class RuleEngine(ConfigStore config, PushStore push, SessionMonito
             // one settings snapshot for the lookup and the run: a save in between must not run another shortcut
             var cfgNow = config.Get();
             if (cfgNow.Shortcuts.FirstOrDefault(s => s.Id == r.Shortcut) is not { } sc
-                || !(sc.Toggle || sc.Cmd == "builtin:mute") || Shortcuts.State(sc, push, audio) == false) return;
+                || !(sc.Toggle || sc.Cmd is "builtin:mute" or "builtin:mic-mute") || Shortcuts.State(sc, push, audio) == false) return;
             // another "while active" rule still holds the same toggle on (Do skipped it because it was on already):
             // only the last one to end switches it off
             if (_states.Values.Any(o => !ReferenceEquals(o.Rule, r) && o.Active && o.Rule.WhileActive
