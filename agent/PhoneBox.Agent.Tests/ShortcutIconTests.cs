@@ -3,6 +3,14 @@ using Xunit;
 
 public sealed class ShortcutIconTests
 {
+    [Fact]
+    public void MicrophoneToggleTargetNeedsAnEndpointAndPreservesMuteDirection()
+    {
+        Assert.Throws<InvalidOperationException>(() => Shortcuts.MicrophoneToggleTarget(false, false));
+        Assert.True(Shortcuts.MicrophoneToggleTarget(true, true));
+        Assert.False(Shortcuts.MicrophoneToggleTarget(true, false));
+    }
+
     [Theory]
     [InlineData("", false)]
     [InlineData("   ", false)]

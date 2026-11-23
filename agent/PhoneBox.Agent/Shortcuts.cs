@@ -59,6 +59,11 @@ public static class Shortcuts
         if (sc.StateKey is not null) return PushIsOn(push, sc.StateKey);
         return Remembered.TryGetValue(sc.Id, out var r) && r;
     }
+    internal static bool MicrophoneToggleTarget(bool found, bool anyUnmuted)
+    {
+        if (!found) throw new InvalidOperationException("no controllable microphones are available");
+        return anyUnmuted;
+    }
 
     // builtin:cycle: where each cycle key stands; lost when the agent restarts, like a toggle's state. A state belongs to the
     // list it was made for: after the list is edited it is dropped, since its positions would point at other keys.
@@ -414,15 +419,15 @@ public static class Shortcuts
                 }
                 catch (Exception ex) when (ex is COMException or InvalidOperationException)
                 {
+                    throw new InvalidOperationException("could not read a microphone mute state", ex);
                 }
             }
         }
-        if (!found) throw new InvalidOperationException("no controllable microphones are available");
+        var targetMuted = MicrophoneToggleTarget(found, anyUnmuted);
 
         using var enNext = new MMDeviceEnumerator();
         using var devicesNext = enNext.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
         var changed = 0;
-        var targetMuted = anyUnmuted;
         foreach (var device in devicesNext)
         {
             using (device)
