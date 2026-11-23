@@ -99,16 +99,20 @@ public sealed class RuleEngine(ConfigStore config, PushStore push, SessionMonito
 
             if (sustained && !st.Active && cooled)
             {
+                if (!Do(rule, detail)) continue;
                 st.Active = true;
                 _fired[rule.Id] = now;
                 log.LogInformation("rule {Id} fired ({Detail})", rule.Id, detail);
-                Do(rule, detail);
             }
             else if (!holds && st.Active && (now - st.FalseSince >= ReleaseSec * 1000L || rule.When == "time"))
             {
+                if (rule.WhileActive && !Undo(rule))
+                {
+                    active.Add(rule.Id);
+                    continue;
+                }
                 st.Active = false;
                 log.LogInformation("rule {Id} ended", rule.Id);
-                if (rule.WhileActive) Undo(rule);
             }
             if (st.Active) active.Add(rule.Id);
         }
@@ -138,9 +142,9 @@ public sealed class RuleEngine(ConfigStore config, PushStore push, SessionMonito
     }
 
     /// <summary>Runs a rule's action once, regardless of its condition (the Test button in the settings).</summary>
-    public void Test(RuleConfig rule) => Do(rule, "test");
+    public void Test(RuleConfig rule) => _ = Do(rule, "test");
 
-    private void Do(RuleConfig r, string detail)
+    private bool Do(RuleConfig r, string detail)
     {
         switch (r.Then)
         {
@@ -163,14 +167,19 @@ public sealed class RuleEngine(ConfigStore config, PushStore push, SessionMonito
             case "shortcut" when !string.IsNullOrWhiteSpace(r.Shortcut):
                 var cfgNow = config.Get();
                 if (r.WhileActive && cfgNow.Shortcuts.FirstOrDefault(s => s.Id == r.Shortcut) is { } target
-                    && (target.Toggle || target.Cmd is "builtin:mute" or "builtin:mic-mute") && Shortcuts.State(target, push, audio) == true)
-                    break;
+                    && (target.Toggle || target.Cmd is "builtin:mute" or "builtin:mic-mute"))
+                {
+                    var state = Shortcuts.State(target, push, audio);
+                    if (state is null) return false;
+                    if (state == true) break;
+                }
                 if (Shortcuts.Run(cfgNow, r.Shortcut, log, push, audio) is { } error) log.LogWarning("rule {Id}: {Error}", r.Id, error);
                 break;
         }
+        return true;
     }
 
-    private void Undo(RuleConfig r)
+    private bool Undo(RuleConfig r)
     {
         if (r.Then == "goto") push.Emit("back", JsonSerializer.SerializeToElement(new { rule = r.Id }));
         else if (r.Then == "push" && !string.IsNullOrWhiteSpace(r.Key)) push.Remove(r.Key);
@@ -179,14 +188,18 @@ public sealed class RuleEngine(ConfigStore config, PushStore push, SessionMonito
             // one settings snapshot for the lookup and the run: a save in between must not run another shortcut
             var cfgNow = config.Get();
             if (cfgNow.Shortcuts.FirstOrDefault(s => s.Id == r.Shortcut) is not { } sc
-                || !(sc.Toggle || sc.Cmd is "builtin:mute" or "builtin:mic-mute") || Shortcuts.State(sc, push, audio) == false) return;
+                || !(sc.Toggle || sc.Cmd is "builtin:mute" or "builtin:mic-mute")) return true;
+            var state = Shortcuts.State(sc, push, audio);
+            if (state is null) return false;
+            if (state == false) return true;
             // another "while active" rule still holds the same toggle on (Do skipped it because it was on already):
             // only the last one to end switches it off
             if (_states.Values.Any(o => !ReferenceEquals(o.Rule, r) && o.Active && o.Rule.WhileActive
-                    && o.Rule.Then == "shortcut" && o.Rule.Shortcut == r.Shortcut)) return;
+                    && o.Rule.Then == "shortcut" && o.Rule.Shortcut == r.Shortcut)) return true;
             if (Shortcuts.Run(cfgNow, sc.Id, log, push, audio) is { } error) // a toggle switches back off
                 log.LogWarning("rule {Id}: could not switch {Shortcut} back off: {Error}", r.Id, sc.Id, error);
         }
+        return true;
     }
 
     private (bool Holds, string Detail) Check(RuleConfig r)

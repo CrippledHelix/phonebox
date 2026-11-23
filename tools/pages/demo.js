@@ -618,6 +618,11 @@
         if (n) { const at = cyclePos[sc.id].at = (cyclePos[sc.id].at + 1) % n; cycles[sc.id] = { target: sc.cycle[at], list }; }
       }
       else if (sc.cmd === 'builtin:mute') audio.muted = !audio.muted;
+      else if (sc.cmd === 'builtin:mic-mute') {
+        const inputs = deck.audio.devices.filter((device) => device.direction === 'input');
+        const targetMuted = inputs.some((device) => !device.muted);
+        inputs.forEach((device) => { device.muted = targetMuted; });
+      }
       else if (sc.toggle) toggles[sc.id] = !toggles[sc.id];
       return json({});
     }

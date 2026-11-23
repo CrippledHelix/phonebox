@@ -2910,6 +2910,15 @@ function renderEditor() {
   if (!s) { ed.append(h('p', { class: 'lead', style: { margin: 0 } }, t('s.k.noShortcuts'))); return; }
 
   const upd = (key, val, rerender = true) => { s[key] = val; if (rerender) renderDeckKeysOnly(); changed(); };
+  const setCommand = (value) => {
+    s.cmd = value;
+    if (value === 'builtin:mic-mute') {
+      delete s.stateKey;
+      delete s.offCmd;
+      delete s.offArgs;
+    }
+    changed();
+  };
   const text = (key, label, ph = '', hint = '') => h('div', { class: 'field' }, h('label', {}, label),
     h('input', { type: 'text', value: s[key] ?? '', placeholder: ph, oninput: (e) => upd(key, e.target.value) }),
     hint ? h('span', { class: 'hint' }, hint) : null);
@@ -2920,8 +2929,8 @@ function renderEditor() {
     onclick: () => { colorIn.value = c; upd('color', c); markSwatch(); } })));
   const markSwatch = () => sw.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.c === s.color));
   markSwatch();
-  const cmdIn = h('input', { type: 'text', value: s.cmd || '', placeholder: t('s.k.cmdPlaceholder'), oninput: (e) => upd('cmd', e.target.value, false) });
-  const preset = h('select', { onchange: (e) => { if (e.target.value) { cmdIn.value = e.target.value; upd('cmd', e.target.value, false); cmdIn.focus(); } e.target.value = ''; } },
+  const cmdIn = h('input', { type: 'text', value: s.cmd || '', placeholder: t('s.k.cmdPlaceholder'), oninput: (e) => setCommand(e.target.value) });
+  const preset = h('select', { onchange: (e) => { if (e.target.value) { cmdIn.value = e.target.value; setCommand(e.target.value); cmdIn.focus(); } e.target.value = ''; } },
     ...presets().map(([v, l]) => h('option', { value: v }, tl(l))));
 
   ed.append(

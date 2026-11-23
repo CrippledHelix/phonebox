@@ -122,6 +122,7 @@ public class UpdateBundleTests : IDisposable
         var create = Process.Start(new ProcessStartInfo("/usr/bin/hdiutil", ["create", "-volname", "PhoneBoxEmpty", "-srcfolder", src, "-format", "UDZO", dmg])
             { RedirectStandardOutput = true, RedirectStandardError = true })!;
         await create.WaitForExitAsync();
+        Assert.Equal(0, create.ExitCode);
 
         var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             UpdateService.ExtractAppAsync(dmg, Path.Combine(_root, "never", "PhoneBox.app"), CancellationToken.None));

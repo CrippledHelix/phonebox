@@ -120,4 +120,42 @@ public sealed class ShortcutRuleFollowUpTests : IDisposable
         engine.Evaluate();
         lock (log.Lines) Assert.Contains(log.Lines, l => l.Contains("rule a") && l.Contains("back off"));
     }
+
+    [Fact]
+    public void AWhileActiveMicrophoneRuleWaitsForAnUnknownState()
+    {
+        var cfg = new ConfigStore(Path.Combine(_dir, "config.json"));
+        var micId = "unknown-mic-" + Guid.NewGuid().ToString("N");
+        var micJson = $$"""{ "id": "{{micId}}", "label": "Microphones", "cmd": "builtin:mic-mute", "toggle": true }""";
+        Assert.Null(cfg.Save(Settings(micId, micJson, ("a", true))));
+        _push.Set("mic", JsonSerializer.SerializeToElement(true), null);
+
+        var engine = Engine(cfg);
+        engine.Evaluate();
+
+        Assert.Empty(engine.Active());
+    }
+
+    [Fact]
+    public void AWhileActiveMicrophoneRuleDoesNotCompleteReleaseWithAnUnknownState()
+    {
+        var cfg = new ConfigStore(Path.Combine(_dir, "config.json"));
+        var micId = "unknown-release-mic-" + Guid.NewGuid().ToString("N");
+        var heldJson = $$"""{ "id": "{{micId}}", "label": "Microphones", "cmd": "builtin:macro", "toggle": true, "stateKey": "held-state" }""";
+        Assert.Null(cfg.Save(Settings(micId, heldJson, ("a", true))));
+        _push.Set("mic", JsonSerializer.SerializeToElement(true), null);
+        _push.Set("held-state", JsonSerializer.SerializeToElement(true), null);
+        var engine = Engine(cfg);
+
+        engine.Evaluate();
+        Assert.Contains("a", engine.Active());
+
+        var micJson = $$"""{ "id": "{{micId}}", "label": "Microphones", "cmd": "builtin:mic-mute", "toggle": true }""";
+        Assert.Null(cfg.Save(Settings(micId, micJson, ("a", true))));
+        _push.Set("mic", JsonSerializer.SerializeToElement(false), null);
+        Thread.Sleep(RuleEngine.ReleaseSec * 1000 + 300);
+        engine.Evaluate();
+
+        Assert.Contains("a", engine.Active());
+    }
 }
