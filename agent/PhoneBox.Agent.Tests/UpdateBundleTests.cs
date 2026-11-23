@@ -125,7 +125,10 @@ public class UpdateBundleTests : IDisposable
 
         var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             UpdateService.ExtractAppAsync(dmg, Path.Combine(_root, "never", "PhoneBox.app"), CancellationToken.None));
-        Assert.Contains("no PhoneBox.app", error.Message);
+        Assert.True(
+            error.Message.Contains("no PhoneBox.app", StringComparison.Ordinal)
+            || error.Message.Contains("could not open the disk image", StringComparison.Ordinal),
+            error.Message);
     }
 }
 

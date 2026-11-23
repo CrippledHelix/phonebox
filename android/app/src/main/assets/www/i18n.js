@@ -10715,6 +10715,7 @@
       'GNOME Settings': 'Cài đặt GNOME',
       'System Monitor': 'Giám sát hệ thống',
       'Built-in: toggle mute': 'Có sẵn: bật/tắt tiếng',
+      'Built-in: mute microphones': 'Có sẵn: tắt tiếng micrô',
       'Built-in: turn monitors off (X11)': 'Có sẵn: tắt màn hình (X11)',
       'Built-in: turn monitors off': 'Có sẵn: tắt màn hình',
       'Built-in: lock the session': 'Có sẵn: khóa phiên',
